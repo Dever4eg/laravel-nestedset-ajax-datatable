@@ -7,19 +7,26 @@ use Illuminate\Database\Eloquent\Model;
 class Employee extends Model
 {
 
-    public function children()
+    public function subordinates()
     {
-        return $this->hasMany('App\Employee', 'chief_id')->with('children');
+        return $this->hasMany('App\Employee', 'chief_id')->with('subordinates');
     }
 
-    public function parent()
+    public function chief()
     {
         return $this->belongsTo('App\Employee', 'chief_id');
     }
 
-    public static function GetTree()
+
+    public static function HideProp($collection, $properties)
     {
-        return self::doesntHave('parent')->with('children')->get();
+        $arr = [];
+        foreach ($collection as $item) {
+            $arr[] = $item->makeHidden($properties);
+            if(!empty($item->children))
+                $item->children = self::HideProp($item->children, $properties);
+        }
+        return $arr;
     }
 
 }

@@ -14,7 +14,13 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        return response()->json(Employee::GetTree());
+
+        $employees = Employee::HideProp(
+            Employee::doesntHave('chief')->with('subordinates')->get(),
+            ['salary', 'date', 'created_at', 'updated_at']
+        );
+
+        return response()->json($employees);
     }
 
     /**

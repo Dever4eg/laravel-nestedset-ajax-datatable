@@ -20,8 +20,8 @@
                             // Displayed text
                             data[i].text = data[i].fullname + ", " + data[i].position;
 
-                            if(data[i].children)
-                                data[i].children =  proc(data[i].children);
+                            if(data[i].subordinates)
+                                data[i].children =  proc(data[i].subordinates);
                         } );
                         return data;
                     }(data));

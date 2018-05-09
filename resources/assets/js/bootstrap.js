@@ -14,6 +14,7 @@ try {
 
     require('bootstrap');
     require('gijgo');
+
 } catch (e) {}
 
 /**

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Employee;
 use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
@@ -13,36 +14,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        return json_encode([
-            [
-                "text" => "test"
-            ],
-            [
-                "text" => "test",
-                "children" => [
-                    [
-                        "text" => "test"
-                    ],
-                    [
-                        "text" => "test"
-                    ],
-                    [
-                        "text" => "test",
-                        "children" => [
-                            [
-                                "text" => "test"
-                            ],
-                            [
-                                "text" => "test"
-                            ],
-                        ]
-                    ],
-                ]
-            ],
-            [
-                "text" => "test"
-            ],
-        ]);
+        return response()->json(Employee::GetTree());
     }
 
     /**

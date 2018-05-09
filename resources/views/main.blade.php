@@ -7,6 +7,7 @@
 @section('scripts')
     <script>
         $('#tree').tree({
+            textField: 'fullname',
             dataSource: '/api/employees'
         });
     </script>

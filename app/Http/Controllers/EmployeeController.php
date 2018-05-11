@@ -89,8 +89,7 @@ class EmployeeController extends Controller
 
     public function LazyLoadTree(Request $request)
     {
-        $employees = Employee::where('chief_id', $request['parentId'])->get();
-
+        $employees = Employee::where('chief_id', $request['parentId'])->with('subordinates')->get();
         $employees = Employee::LazyLoadPrepare($employees);
 
         return response()->json($employees);

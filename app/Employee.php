@@ -9,7 +9,7 @@ class Employee extends Model
 
     public function subordinates()
     {
-        return $this->hasMany('App\Employee', 'chief_id')->with('subordinates');
+        return $this->hasMany('App\Employee', 'chief_id');
     }
 
     public function chief()
@@ -18,14 +18,26 @@ class Employee extends Model
     }
 
 
-    public static function HideProp($collection, $properties)
+    public static function LazyLoadPrepare($collection, $hideProperties = null)
     {
         $arr = [];
+
         foreach ($collection as $item) {
-            $arr[] = $item->makeHidden($properties);
-            if(!empty($item->children))
-                $item->children = self::HideProp($item->children, $properties);
+            $item->text = view('parts.employee')->with([
+                'fullname'  => $item->fullname,
+                'position'  => $item->position
+            ])->render();
+
+            $item->hasChildren = $item->subordinates->isNotEmpty();
+            $item->children = [];
+
+            $item->makeHidden(['position', 'fullname', 'subordinates',
+                'salary', 'created_at', 'updated_at', 'date', 'chief_id'
+            ]);
+
+            $arr[] = $item;
         }
+
         return $arr;
     }
 

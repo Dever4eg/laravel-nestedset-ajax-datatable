@@ -13,7 +13,7 @@ class EmployeesTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Employee::class, 10)->create([
+        factory(App\Employee::class, 20)->create([
             'position' => "directior",
         ])->each(function ($employee) {
             factory(App\Employee::class, 5)->create([
@@ -27,7 +27,19 @@ class EmployeesTableSeeder extends Seeder
                     factory(App\Employee::class, 5)->create([
                         'position'  => "directior",
                         'chief_id'  => $employee->id
-                    ]);
+                    ])->each(function ($employee) {
+                        factory(App\Employee::class, 5)->create([
+                            'position'  => "directior",
+                            'chief_id'  => $employee->id
+                        ])->each(function ($employee) {
+                            factory(App\Employee::class, 5)->create([
+                                'position'  => "directior",
+                                'chief_id'  => $employee->id
+                            ])->each(function ($employee) {
+
+                            });
+                        });
+                    });
                 });
             });
         });

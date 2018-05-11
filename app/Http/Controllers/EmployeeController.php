@@ -12,16 +12,13 @@ class EmployeeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
 
-        $employees = Employee::HideProp(
-            Employee::doesntHave('chief')->with('subordinates')->get(),
-            ['salary', 'date', 'created_at', 'updated_at']
-        );
-
-        return response()->json($employees);
     }
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -87,5 +84,15 @@ class EmployeeController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    public function LazyLoadTree(Request $request)
+    {
+        $employees = Employee::where('chief_id', $request['parentId'])->get();
+
+        $employees = Employee::LazyLoadPrepare($employees);
+
+        return response()->json($employees);
     }
 }

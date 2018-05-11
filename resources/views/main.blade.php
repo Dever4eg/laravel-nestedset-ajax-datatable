@@ -8,31 +8,12 @@
     <script>
 
         $(document).ready(function(){
-            $.ajax({
-                url: "/api/employees",
-                method:"get",
-                dataType: "json",
-                success: function (data)
-                {
-                    data = (function proc(data) {
-                        data.forEach(function(item, i, data){
-
-                            // Displayed text
-                            data[i].text = data[i].fullname + ", " + data[i].position;
-
-                            if(data[i].subordinates)
-                                data[i].children =  proc(data[i].subordinates);
-                        } );
-                        return data;
-                    }(data));
-
-                    $('#tree').tree({
-                        textField: 'text',
-                        dataSource: data
-                    });
-                }
+            $('#tree').tree({
+                textField: 'text',
+                primaryKey: 'id',
+                lazyLoading: true,
+                dataSource: '/api/employees'
             });
-
         });
     </script>
 @endsection

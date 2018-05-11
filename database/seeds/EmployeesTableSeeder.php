@@ -13,21 +13,23 @@ class EmployeesTableSeeder extends Seeder
      */
     public function run()
     {
-        $emp = new Employee();
-        $emp->fullname  = 'Буров Владислав Иванович';
-        $emp->position  = 'Директор';
-        $emp->salary    = 2000;
-        $emp->date      = Carbon::parse('2000-01-04');
-        $emp->save();
-
-        for($i =0;$i<10;$i++) {
-            $e = new Employee();
-            $e->fullname    = 'Буров Сергей Иванович';
-            $e->position    = 'Директор';
-            $e->salary      = 2000;
-            $e->date        = Carbon::parse('2000-01-04');
-            $e->chief_id    = $emp->id;
-            $e->save();
-        }
+        factory(App\Employee::class, 10)->create([
+            'position' => "directior",
+        ])->each(function ($employee) {
+            factory(App\Employee::class, 5)->create([
+                'position'  => "directior",
+                'chief_id'  => $employee->id
+            ])->each(function ($employee) {
+                factory(App\Employee::class, 5)->create([
+                    'position'  => "directior",
+                    'chief_id'  => $employee->id
+                ])->each(function ($employee) {
+                    factory(App\Employee::class, 5)->create([
+                        'position'  => "directior",
+                        'chief_id'  => $employee->id
+                    ]);
+                });
+            });
+        });
     }
 }

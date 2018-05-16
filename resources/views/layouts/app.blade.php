@@ -15,7 +15,7 @@
 <body>
 
 <div class="container">
-    <h1>test</h1>
+    <h1>Abz.agency тестовое задание</h1>
     @yield('content')
 </div>
 

@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+    <div id="app">
+
+    </div>
     <div id="tree"></div>
 @endsection
 
@@ -12,7 +15,7 @@
                 textField: 'text',
                 primaryKey: 'id',
                 lazyLoading: true,
-                dataSource: '/api/employees'
+                dataSource: '/api/employees/getTree'
             });
         });
     </script>

@@ -17,4 +17,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('employees', 'EmployeeController@LazyLoadTree');
+Route::get('employees/getTree', 'EmployeeController@LazyLoadTree');
+Route::get('employees/getData', 'EmployeeController@GetData');

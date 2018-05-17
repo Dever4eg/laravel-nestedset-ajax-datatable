@@ -19,9 +19,23 @@ class EmployeeController extends Controller
     }
 
 
-    public function GetData()
+    public function GetData(Request $request)
     {
-        //
+        $columns = ['fullname', 'position', 'date', 'salary'];
+
+        $length = $request->input('length');
+        $column = $request->input('column');
+        $dir = $request->input('dir');
+        $searchValue = $request->input('search');
+        $query = Employee::select('fullname', 'position', 'date', 'salary')->orderBy($columns[$column], $dir);
+        if ($searchValue) {
+            $query->where(function($query) use ($searchValue) {
+                $query->where('fullname', 'like', '%' . $searchValue . '%')
+                    ->orWhere('position', 'like', '%' . $searchValue . '%');
+            });
+        }
+        $employees = $query->paginate($length);
+        return ['data' => $employees, 'draw' => $request->input('draw')];
     }
 
     public function LazyLoadTree(Request $request)

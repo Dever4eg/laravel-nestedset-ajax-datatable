@@ -1,9 +1,8 @@
-
 @extends('layouts.app')
 
 @section('content')
-    <div id="app">
 
+    <div id="app">
+        <employees></employees>
     </div>
-    <h1>Dataview</h1>
 @endsection

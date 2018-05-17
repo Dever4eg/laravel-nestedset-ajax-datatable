@@ -3,4 +3,4 @@
 
 
 Route::get('/', 'EmployeeController@tree');
-Route::get('/dataview', 'EmployeeController@dataview');
+Route::get('/table', 'EmployeeController@dataview');

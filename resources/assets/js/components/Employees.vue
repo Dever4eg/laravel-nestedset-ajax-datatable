@@ -2,8 +2,7 @@
     <div class="employees">
 
         <div class="tableFilters">
-            <input class="search" type="text" v-model="tableData.search" placeholder="Search"
-                   @input="getEmployees()">
+            <input class="search" type="text" v-model="tableData.search" placeholder="Search" @input="getEmployees()">
 
             <div class="control">
                 <div class="select">
@@ -25,16 +24,25 @@
             </tr>
             </tbody>
         </datatable>
-        <pagination :pagination="pagination"
-                    @prev="getEmployees(pagination.prevPageUrl)"
-                    @next="getEmployees(pagination.nextPageUrl)">
+        <pagination class="pagination"
+                :page-class="'page-item'"
+                :page-link-class="'page-link'"
+                :prev-class="'page-item'"
+                :prev-link-class="'page-link'"
+                :next-class="'page-item'"
+                :next-link-class="'page-link'"
+                :page-count="pagination.lastPage"
+                :click-handler="paginate"
+                :prev-text="'Prev'"
+                :next-text="'Next'"
+                ref="paginate">
         </pagination>
     </div>
 </template>
 
 <script>
     import Datatable from './Datatable.vue';
-    import Pagination from './Pagination.vue';
+    import Pagination from 'vuejs-paginate';
     export default {
         name: "Employees",
         components: {datatable: Datatable, pagination: Pagination},
@@ -65,14 +73,8 @@
                     dir: 'asc',
                 },
                 pagination: {
-                    lastPage: '',
-                    currentPage: '',
-                    total: '',
-                    lastPageUrl: '',
-                    nextPageUrl: '',
-                    prevPageUrl: '',
-                    from: '',
-                    to: ''
+                    lastPage: 1,
+                    currentPage: 1,
                 },
             }
         },
@@ -94,12 +96,7 @@
             configPagination(data) {
                 this.pagination.lastPage = data.last_page;
                 this.pagination.currentPage = data.current_page;
-                this.pagination.total = data.total;
-                this.pagination.lastPageUrl = data.last_page_url;
-                this.pagination.nextPageUrl = data.next_page_url;
-                this.pagination.prevPageUrl = data.prev_page_url;
-                this.pagination.from = data.from;
-                this.pagination.to = data.to;
+                this.$refs.paginate.selected = data.current_page-1;
             },
             sortBy(key) {
                 this.sortKey = key;
@@ -112,29 +109,25 @@
             getIndex(array, key, value) {
                 return array.findIndex(i => i[key] == value)
             },
+            paginate(page){
+                this.getEmployees('/api/employees/getData?page='+page);
+            },
         }
     }
-
 </script>
 
 <style scoped lang="scss">
-    .employees
-    {
-        .tableFilters
-        {
+    .employees {
+        .tableFilters {
             margin-bottom: 10px;
-            input
-            {
+            input {
                 width: 400px;
             }
-            .control
-            {
+            .control {
                 float: right;
             }
         }
-
-        .table
-        {
+        .table {
             width: 100%;
         }
     }

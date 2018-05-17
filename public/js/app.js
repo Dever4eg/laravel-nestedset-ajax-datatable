@@ -64615,10 +64615,8 @@ module.exports = function normalizeComponent (
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Datatable_vue__ = __webpack_require__(58);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Datatable_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Datatable_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuejs_paginate__ = __webpack_require__(72);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuejs_paginate___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vuejs_paginate__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuejs_paginate__ = __webpack_require__(72);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuejs_paginate___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vuejs_paginate__);
 //
 //
 //
@@ -64661,37 +64659,36 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: "Employees",
-    components: { datatable: __WEBPACK_IMPORTED_MODULE_0__Datatable_vue___default.a, pagination: __WEBPACK_IMPORTED_MODULE_1_vuejs_paginate___default.a },
+    components: { pagination: __WEBPACK_IMPORTED_MODULE_0_vuejs_paginate___default.a },
     created: function created() {
         this.getEmployees();
     },
     data: function data() {
-        var sortOrders = {};
-        var columns = [{ width: '25%', label: 'Fullname', name: 'fullname' }, { width: '25%', label: 'position', name: 'position' }, { width: '25%', label: 'date', name: 'date' }, { width: '25%', label: 'salary', name: 'salary' }];
-        columns.forEach(function (column) {
-            sortOrders[column.name] = -1;
-        });
+        var columns = [{ width: '30%', label: 'Fullname', name: 'fullname' }, { width: '30%', label: 'Position', name: 'position' }, { width: '20%', label: 'Date', name: 'date' }, { width: '20%', label: 'Salary', name: 'salary' }];
+
         return {
             employees: [],
             columns: columns,
-            sortKey: '',
-            sortOrders: sortOrders,
-            tableData: {
-                draw: 0,
-                length: 10,
-                search: '',
-                column: 0,
-                dir: 'asc'
-            },
-            pagination: {
-                lastPage: 1,
-                currentPage: 1
-            }
+
+            sortKey: 'fullname',
+            sortDir: 'asc',
+            PageSize: 10,
+            PageCount: 1,
+
+            search: ''
         };
     },
 
@@ -64699,38 +64696,31 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         getEmployees: function getEmployees() {
             var _this = this;
 
-            var url = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '/api/employees/getData';
+            var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
 
-            this.tableData.draw++;
-            axios.get(url, { params: this.tableData }).then(function (response) {
-                var data = response.data;
-                if (_this.tableData.draw == data.draw) {
-                    _this.employees = data.data.data;
-                    _this.configPagination(data.data);
-                }
+            axios.get('/api/employees/getData', { params: {
+                    PageSize: this.PageSize,
+                    search: this.search,
+                    sortKey: this.sortKey,
+                    sortDir: this.sortDir,
+                    page: page
+                } }).then(function (response) {
+                response = response.data;
+
+                _this.employees = response.data;
+                _this.PageCount = response.last_page;
+                _this.$refs.paginate.selected = response.current_page - 1;
             }).catch(function (errors) {
                 console.log(errors);
             });
         },
-        configPagination: function configPagination(data) {
-            this.pagination.lastPage = data.last_page;
-            this.pagination.currentPage = data.current_page;
-            this.$refs.paginate.selected = data.current_page - 1;
-        },
         sortBy: function sortBy(key) {
-            this.sortKey = key;
-            this.sortOrders[key] = this.sortOrders[key] * -1;
-            this.tableData.column = this.getIndex(this.columns, 'name', key);
-            this.tableData.dir = this.sortOrders[key] === 1 ? 'asc' : 'desc';
+            if (key !== this.sortKey) {
+                this.sortKey = key;
+                this.sortDir = 'asc';
+            } else this.sortDir = this.sortDir === 'asc' ? 'desk' : 'asc';
+
             this.getEmployees();
-        },
-        getIndex: function getIndex(array, key, value) {
-            return array.findIndex(function (i) {
-                return i[key] == value;
-            });
-        },
-        paginate: function paginate(page) {
-            this.getEmployees('/api/employees/getData?page=' + page);
         }
     }
 });
@@ -64753,20 +64743,20 @@ var render = function() {
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.tableData.search,
-              expression: "tableData.search"
+              value: _vm.search,
+              expression: "search"
             }
           ],
-          staticClass: "search",
+          staticClass: "form-control search",
           attrs: { type: "text", placeholder: "Search" },
-          domProps: { value: _vm.tableData.search },
+          domProps: { value: _vm.search },
           on: {
             input: [
               function($event) {
                 if ($event.target.composing) {
                   return
                 }
-                _vm.$set(_vm.tableData, "search", $event.target.value)
+                _vm.search = $event.target.value
               },
               function($event) {
                 _vm.getEmployees()
@@ -64775,83 +64765,110 @@ var render = function() {
           }
         }),
         _vm._v(" "),
-        _c("div", { staticClass: "control" }, [
-          _c("div", { staticClass: "select" }, [
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.tableData.length,
-                    expression: "tableData.length"
-                  }
-                ],
-                on: {
-                  change: [
-                    function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.$set(
-                        _vm.tableData,
-                        "length",
-                        $event.target.multiple
-                          ? $$selectedVal
-                          : $$selectedVal[0]
-                      )
-                    },
-                    function($event) {
-                      _vm.getEmployees()
-                    }
-                  ]
+        _c("div", { staticClass: "select" }, [
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.PageSize,
+                  expression: "PageSize"
                 }
-              },
-              [
-                _c("option", { attrs: { value: "10" } }, [_vm._v("10")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "20" } }, [_vm._v("20")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "30" } }, [_vm._v("30")])
-              ]
-            )
-          ])
-        ])
+              ],
+              staticClass: "form-control",
+              on: {
+                change: [
+                  function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.PageSize = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  },
+                  function($event) {
+                    _vm.getEmployees()
+                  }
+                ]
+              }
+            },
+            [
+              _c("option", { attrs: { value: "10" } }, [_vm._v("10")]),
+              _vm._v(" "),
+              _c("option", { attrs: { value: "20" } }, [_vm._v("20")]),
+              _vm._v(" "),
+              _c("option", { attrs: { value: "30" } }, [_vm._v("30")])
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "clearfix" })
       ]),
       _vm._v(" "),
-      _c(
-        "datatable",
-        {
-          attrs: {
-            columns: _vm.columns,
-            sortKey: _vm.sortKey,
-            sortOrders: _vm.sortOrders
-          },
-          on: { sort: _vm.sortBy }
-        },
-        [
+      _c("table", { staticClass: "table" }, [
+        _c("thead", [
           _c(
-            "tbody",
-            _vm._l(_vm.employees, function(employee) {
-              return _c("tr", { key: employee.fullname }, [
-                _c("td", [_vm._v(_vm._s(employee.fullname))]),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(employee.position))]),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(employee.date))]),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(employee.salary))])
-              ])
+            "tr",
+            _vm._l(_vm.columns, function(column) {
+              return _c(
+                "th",
+                {
+                  key: column.name,
+                  style: "width:" + column.width + ";" + "cursor:pointer;",
+                  on: {
+                    click: function($event) {
+                      _vm.sortBy(column.name)
+                    }
+                  }
+                },
+                [
+                  _vm._v(
+                    "\n                    " +
+                      _vm._s(column.label) +
+                      "\n                    "
+                  ),
+                  _c("i", {
+                    staticClass: "fa",
+                    class:
+                      column.name === _vm.sortKey
+                        ? _vm.sortDir === "asc"
+                          ? "fa-sort-down"
+                          : "fa-sort-up"
+                        : "fa-sort",
+                    attrs: { "aria-hidden": "true" }
+                  })
+                ]
+              )
             })
           )
-        ]
-      ),
+        ]),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          _vm._l(_vm.employees, function(employee) {
+            return _c(
+              "tr",
+              { key: employee.fullname },
+              _vm._l(_vm.columns, function(column) {
+                return _c("td", [
+                  _vm._v(
+                    "\n                    " +
+                      _vm._s(employee[column.name]) +
+                      "\n                "
+                  )
+                ])
+              })
+            )
+          })
+        )
+      ]),
       _vm._v(" "),
       _c("pagination", {
         ref: "paginate",
@@ -64863,8 +64880,8 @@ var render = function() {
           "prev-link-class": "page-link",
           "next-class": "page-item",
           "next-link-class": "page-link",
-          "page-count": _vm.pagination.lastPage,
-          "click-handler": _vm.paginate,
+          "page-count": _vm.PageCount,
+          "click-handler": _vm.getEmployees,
           "prev-text": "Prev",
           "next-text": "Next"
         }
@@ -64898,187 +64915,11 @@ if (false) {
 /* 55 */,
 /* 56 */,
 /* 57 */,
-/* 58 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(59)
-}
-var normalizeComponent = __webpack_require__(46)
-/* script */
-var __vue_script__ = __webpack_require__(61)
-/* template */
-var __vue_template__ = __webpack_require__(62)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = "data-v-21031786"
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/Datatable.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-21031786", Component.options)
-  } else {
-    hotAPI.reload("data-v-21031786", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 59 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(60);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(44)("443caa70", content, false, {});
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-21031786\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Datatable.vue", function() {
-     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-21031786\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Datatable.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 60 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(43)(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 61 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    name: "Datatable",
-    props: ['columns', 'sortKey', 'sortOrders']
-});
-
-/***/ }),
-/* 62 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "table",
-    { staticClass: "table" },
-    [
-      _c("thead", [
-        _c(
-          "tr",
-          _vm._l(_vm.columns, function(column) {
-            return _c(
-              "th",
-              {
-                key: column.name,
-                style: "width:" + column.width + ";" + "cursor:pointer;",
-                on: {
-                  click: function($event) {
-                    _vm.$emit("sort", column.name)
-                  }
-                }
-              },
-              [
-                _vm._v(
-                  "\n            " + _vm._s(column.label) + "\n            "
-                ),
-                _c("i", {
-                  staticClass: "fa",
-                  class:
-                    _vm.sortKey === column.name
-                      ? _vm.sortOrders[column.name] > 0
-                        ? "fa-sort-down"
-                        : "fa-sort-up"
-                      : "fa-sort",
-                  attrs: { "aria-hidden": "true" }
-                })
-              ]
-            )
-          })
-        )
-      ]),
-      _vm._v(" "),
-      _vm._t("default")
-    ],
-    2
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-21031786", module.exports)
-  }
-}
-
-/***/ }),
+/* 58 */,
+/* 59 */,
+/* 60 */,
+/* 61 */,
+/* 62 */,
 /* 63 */,
 /* 64 */,
 /* 65 */,
@@ -65120,7 +64961,7 @@ exports = module.exports = __webpack_require__(43)(false);
 
 
 // module
-exports.push([module.i, "\n.employees .tableFilters[data-v-5d933644] {\n  margin-bottom: 10px;\n}\n.employees .tableFilters input[data-v-5d933644] {\n    width: 400px;\n}\n.employees .tableFilters .control[data-v-5d933644] {\n    float: right;\n}\n.employees .table[data-v-5d933644] {\n  width: 100%;\n}\n", ""]);
+exports.push([module.i, "\n.employees .tableFilters[data-v-5d933644] {\n  margin-bottom: 10px;\n}\n.employees .tableFilters .search[data-v-5d933644] {\n    width: 400px;\n    max-width: 80%;\n    float: left;\n}\n.employees .tableFilters .select[data-v-5d933644] {\n    float: right;\n}\n.employees .table[data-v-5d933644] {\n  width: 100%;\n}\n", ""]);
 
 // exports
 

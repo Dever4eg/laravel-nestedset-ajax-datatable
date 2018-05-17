@@ -2,28 +2,37 @@
     <div class="employees">
 
         <div class="tableFilters">
-            <input class="search" type="text" v-model="tableData.search" placeholder="Search" @input="getEmployees()">
-
-            <div class="control">
-                <div class="select">
-                    <select v-model="tableData.length" @change="getEmployees()">
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="30">30</option>
-                    </select>
-                </div>
+            <input class="form-control search" type="text" v-model="search" placeholder="Search" @input="getEmployees()">
+            <div class="select">
+                <select class="form-control" v-model="PageSize" @change="getEmployees()">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                </select>
             </div>
+            <div class="clearfix"></div>
         </div>
-        <datatable :columns="columns" :sortKey="sortKey" :sortOrders="sortOrders" @sort="sortBy">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th v-for="column in columns" :key="column.name" @click="sortBy(column.name)"
+                        :style="'width:'+column.width+';'+'cursor:pointer;'">
+                        {{column.label}}
+                        <i class="fa" aria-hidden="true"
+                           :class="column.name === sortKey ? (sortDir === 'asc' ? 'fa-sort-down' : 'fa-sort-up') : 'fa-sort'"></i>
+                    </th>
+                </tr>
+            </thead>
             <tbody>
-            <tr v-for="employee in employees" :key="employee.fullname">
-                <td>{{employee.fullname}}</td>
-                <td>{{employee.position}}</td>
-                <td>{{employee.date}}</td>
-                <td>{{employee.salary}}</td>
-            </tr>
+                <tr v-for="employee in employees" :key="employee.fullname">
+                    <td v-for="column in columns">
+                        {{employee[column.name]}}
+                    </td>
+                </tr>
             </tbody>
-        </datatable>
+        </table>
+
         <pagination class="pagination"
                 :page-class="'page-item'"
                 :page-link-class="'page-link'"
@@ -31,8 +40,8 @@
                 :prev-link-class="'page-link'"
                 :next-class="'page-item'"
                 :next-link-class="'page-link'"
-                :page-count="pagination.lastPage"
-                :click-handler="paginate"
+                :page-count="PageCount"
+                :click-handler="getEmployees"
                 :prev-text="'Prev'"
                 :next-text="'Next'"
                 ref="paginate">
@@ -41,76 +50,61 @@
 </template>
 
 <script>
-    import Datatable from './Datatable.vue';
     import Pagination from 'vuejs-paginate';
     export default {
         name: "Employees",
-        components: {datatable: Datatable, pagination: Pagination},
+        components: {pagination: Pagination},
         created() {
             this.getEmployees();
         },
         data() {
-            let sortOrders = {};
             let columns = [
-                {width: '25%', label: 'Fullname', name: 'fullname' },
-                {width: '25%', label: 'position', name: 'position'},
-                {width: '25%', label: 'date', name: 'date'},
-                {width: '25%', label: 'salary', name: 'salary'}
+                {width: '30%', label: 'Fullname', name: 'fullname' },
+                {width: '30%', label: 'Position', name: 'position'},
+                {width: '20%', label: 'Date', name: 'date'},
+                {width: '20%', label: 'Salary', name: 'salary'}
             ];
-            columns.forEach((column) => {
-                sortOrders[column.name] = -1;
-            });
+
             return {
                 employees: [],
                 columns: columns,
-                sortKey: '',
-                sortOrders: sortOrders,
-                tableData: {
-                    draw: 0,
-                    length: 10,
-                    search: '',
-                    column: 0,
-                    dir: 'asc',
-                },
-                pagination: {
-                    lastPage: 1,
-                    currentPage: 1,
-                },
+
+                sortKey: 'fullname',
+                sortDir: 'asc',
+                PageSize: 10,
+                PageCount: 1,
+
+                search: '',
             }
         },
         methods: {
-            getEmployees(url = '/api/employees/getData') {
-                this.tableData.draw++;
-                axios.get(url, {params: this.tableData})
+            getEmployees(page = 1) {
+                axios.get('/api/employees/getData', {params: {
+                        PageSize:   this.PageSize,
+                        search:     this.search,
+                        sortKey:    this.sortKey,
+                        sortDir:        this.sortDir,
+                        page:       page
+                    }})
                     .then(response => {
-                        let data = response.data;
-                        if (this.tableData.draw == data.draw) {
-                            this.employees = data.data.data;
-                            this.configPagination(data.data);
-                        }
+                        response = response.data;
+
+                        this.employees = response.data;
+                        this.PageCount = response.last_page;
+                        this.$refs.paginate.selected = response.current_page-1;
                     })
                     .catch(errors => {
                         console.log(errors);
                     });
             },
-            configPagination(data) {
-                this.pagination.lastPage = data.last_page;
-                this.pagination.currentPage = data.current_page;
-                this.$refs.paginate.selected = data.current_page-1;
-            },
             sortBy(key) {
-                this.sortKey = key;
-                this.sortOrders[key] = this.sortOrders[key] * -1;
-                this.tableData.column = this.getIndex(this.columns, 'name', key);
-                this.tableData.dir = this.sortOrders[key] === 1 ? 'asc' : 'desc';
-                this.getEmployees();
-            },
+                if(key !== this.sortKey) {
+                    this.sortKey = key;
+                    this.sortDir = 'asc';
+                } else
+                    this.sortDir = this.sortDir === 'asc' ? 'desk' : 'asc';
 
-            getIndex(array, key, value) {
-                return array.findIndex(i => i[key] == value)
-            },
-            paginate(page){
-                this.getEmployees('/api/employees/getData?page='+page);
+                this.getEmployees();
             },
         }
     }
@@ -120,10 +114,12 @@
     .employees {
         .tableFilters {
             margin-bottom: 10px;
-            input {
+            .search {
                 width: 400px;
+                max-width: 80%;
+                float: left;
             }
-            .control {
+            .select {
                 float: right;
             }
         }

@@ -21,21 +21,23 @@ class EmployeeController extends Controller
 
     public function GetData(Request $request)
     {
-        $columns = ['fullname', 'position', 'date', 'salary'];
+        $PageSize   = $request->input('PageSize');
+        $sortKey    = $request->input('sortKey');
+        $sortDir    = $request->input('sortDir');
+        $search     = $request->input('search');
 
-        $length = $request->input('length');
-        $column = $request->input('column');
-        $dir = $request->input('dir');
-        $searchValue = $request->input('search');
-        $query = Employee::select('fullname', 'position', 'date', 'salary')->orderBy($columns[$column], $dir);
-        if ($searchValue) {
-            $query->where(function($query) use ($searchValue) {
-                $query->where('fullname', 'like', '%' . $searchValue . '%')
-                    ->orWhere('position', 'like', '%' . $searchValue . '%');
+        $query = Employee::select('fullname', 'position', 'date', 'salary')->orderBy($sortKey, $sortDir);
+
+        if ($search) {
+            $query->where(function($query) use ($search) {
+                $query->where('fullname', 'like', '%' . $search . '%')
+                    ->orWhere('position', 'like', '%' . $search . '%')
+                    ->orWhere('date', 'like', '%' . $search . '%')
+                    ->orWhere('salary', 'like', '%' . $search . '%');
             });
         }
-        $employees = $query->paginate($length);
-        return ['data' => $employees, 'draw' => $request->input('draw')];
+
+        return $query->paginate($PageSize);
     }
 
     public function LazyLoadTree(Request $request)

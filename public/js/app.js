@@ -64692,6 +64692,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         };
     },
 
+
     methods: {
         getEmployees: function getEmployees() {
             var _this = this;
@@ -64699,7 +64700,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
 
             axios.get('/api/employees/getData', { params: {
-                    PageSize: this.PageSize,
+                    pageSize: this.PageSize,
                     search: this.search,
                     sortKey: this.sortKey,
                     sortDir: this.sortDir,

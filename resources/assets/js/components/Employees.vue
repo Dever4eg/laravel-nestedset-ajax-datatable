@@ -77,13 +77,14 @@
                 search: '',
             }
         },
+
         methods: {
             getEmployees(page = 1) {
                 axios.get('/api/employees/getData', {params: {
-                        PageSize:   this.PageSize,
+                        pageSize:   this.PageSize,
                         search:     this.search,
                         sortKey:    this.sortKey,
-                        sortDir:        this.sortDir,
+                        sortDir:    this.sortDir,
                         page:       page
                     }})
                     .then(response => {

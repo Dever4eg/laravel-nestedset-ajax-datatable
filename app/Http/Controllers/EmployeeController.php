@@ -21,10 +21,17 @@ class EmployeeController extends Controller
 
     public function GetData(Request $request)
     {
-        $PageSize   = $request->input('PageSize');
-        $sortKey    = $request->input('sortKey');
-        $sortDir    = $request->input('sortDir');
-        $search     = $request->input('search');
+        $validated = $request->validate([
+            'sortKey'   => 'required|in:fullname,position,date,salary',
+            'sortDir'   => 'required|in:asc,desc',
+            'pageSize'  => 'required|integer|min:1',
+            'search'    => 'max:255',
+        ]);
+
+        $pageSize   = $validated['pageSize'];
+        $sortKey    = $validated['sortKey'];
+        $sortDir    = $validated['sortDir'];
+        $search     = $validated['search'];
 
         $query = Employee::select('fullname', 'position', 'date', 'salary')->orderBy($sortKey, $sortDir);
 
@@ -37,7 +44,7 @@ class EmployeeController extends Controller
             });
         }
 
-        return $query->paginate($PageSize);
+        return $query->paginate($pageSize);
     }
 
     public function LazyLoadTree(Request $request)

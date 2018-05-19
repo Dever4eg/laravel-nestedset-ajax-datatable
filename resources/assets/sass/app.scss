@@ -2,3 +2,20 @@
 @import "~gijgo/css/gijgo";
 
 @import "~font-awesome/scss/font-awesome";
+
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+
+* {
+  font-family: Raleway, Helvetica, Arial, sans-serif;
+}
+
+.v--modal-box {
+  margin-top: 10px;
+  max-width: 600px !important;
+  width: 100% !important;
+
+
+  left: 0 !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}

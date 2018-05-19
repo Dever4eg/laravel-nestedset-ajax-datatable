@@ -1,6 +1,8 @@
 <template>
     <div class="employees">
 
+        <modals-container/>
+
         <div class="tableFilters">
             <input class="form-control search" type="text" v-model="search" placeholder="Search" @input="getEmployees()">
             <div class="select">
@@ -22,12 +24,18 @@
                         <i class="fa" aria-hidden="true"
                            :class="column.name === sortKey ? (sortDir === 'asc' ? 'fa-sort-down' : 'fa-sort-up') : 'fa-sort'"></i>
                     </th>
+                    <th>Control</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="employee in employees" :key="employee.fullname">
                     <td v-for="column in columns">
                         {{employee[column.name]}}
+                    </td>
+                    <td>
+                        <a @click="employeeView(employee)" class="btn btn-primary btn-sm btn-control"><i class="fa fa-eye"></i></a>
+                        <a @click="employeeEdit(employee)" class="btn btn-warning btn-sm btn-control"><i class="fa fa-edit"></i></a>
+                        <a @click="employeeDelete(employee)" class="btn btn-danger btn-sm btn-control"><i class="fa fa-trash"></i></a>
                     </td>
                 </tr>
             </tbody>
@@ -51,6 +59,10 @@
 
 <script>
     import Pagination from 'vuejs-paginate';
+    import EmployeeView from './EmployeeView.vue';
+    import EmployeeEdit from './EmployeeEdit.vue';
+    import EmployeeDelete from './EmployeeDelete.vue';
+
     export default {
         name: "Employees",
         components: {pagination: Pagination},
@@ -60,10 +72,10 @@
         },
         data() {
             let columns = [
-                {width: '30%', label: 'Fullname', name: 'fullname' },
-                {width: '30%', label: 'Position', name: 'position'},
-                {width: '20%', label: 'Date', name: 'date'},
-                {width: '20%', label: 'Salary', name: 'salary'}
+                {width: '25%', label: 'Fullname', name: 'fullname' },
+                {width: '25%', label: 'Position', name: 'position'},
+                {width: '15%', label: 'Date', name: 'date'},
+                {width: '10%', label: 'Salary', name: 'salary'}
             ];
 
             return {
@@ -94,6 +106,8 @@
                         this.employees = response.data;
                         this.PageCount = response.last_page;
                         this.$refs.paginate.selected = response.current_page-1;
+
+
                     })
                     .catch(errors => {
                         console.log(errors);
@@ -108,6 +122,35 @@
 
                 this.getEmployees();
             },
+            employeeView(employee) {
+                this.$modal.show(EmployeeView, {
+                    employee: employee
+                }, {
+                    scrollable: true,
+                    'clickToClose': false,
+                    height: 'auto',
+                });
+            },
+            employeeEdit(employee) {
+                this.$modal.show(EmployeeEdit, {
+                    employee: employee
+                }, {
+                    'clickToClose': false,
+                    height: 'auto'
+                }, {
+                    'closed': this.getEmployees
+                });
+            },
+            employeeDelete(employee) {
+                this.$modal.show(EmployeeDelete, {
+                    employee: employee
+                }, {
+                    'clickToClose': false,
+                    height: 'auto'
+                }, {
+                    'closed': this.getEmployees
+                });
+            }
         }
     }
 </script>
@@ -127,6 +170,11 @@
         }
         .table {
             width: 100%;
+        }
+    }
+    .btn-control{
+        i.fa {
+            color: #fff;
         }
     }
 </style>

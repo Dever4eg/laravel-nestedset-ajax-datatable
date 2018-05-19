@@ -33,7 +33,7 @@ class EmployeeController extends Controller
         $sortDir    = $validated['sortDir'];
         $search     = $validated['search'];
 
-        $query = Employee::select('fullname', 'position', 'date', 'salary')->orderBy($sortKey, $sortDir);
+        $query = Employee::select('id', 'fullname', 'position', 'date', 'salary')->orderBy($sortKey, $sortDir);
 
         if ($search) {
             $query->where(function($query) use ($search) {

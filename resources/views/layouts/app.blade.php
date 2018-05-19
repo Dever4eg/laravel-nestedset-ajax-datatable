@@ -14,14 +14,16 @@
 </head>
 <body>
 
-<div class="container">
-    <h1>Abz.agency тестовое задание</h1>
-    @yield('content')
-</div>
+    <div class="container">
+        <h1>Abz.agency тестовое задание</h1>
+        @yield('content')
+    </div>
 
-<script src="/js/app.js"></script>
+    <script src="/js/app.js"></script>
 
-@yield('scripts')
-
+    @yield('scripts')
+    @if(config('app.env') == 'local')
+        <script src="http://localhost:35729/livereload.js"></script>
+    @endif
 </body>
 </html>

@@ -15,7 +15,7 @@
                 textField: 'text',
                 primaryKey: 'id',
                 lazyLoading: true,
-                dataSource: '/api/employees/getTree'
+                dataSource: '{{route('api.employees.getTree')}}'
             });
         });
     </script>

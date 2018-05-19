@@ -3,6 +3,6 @@
 @section('content')
 
     <div id="app">
-        <employees></employees>
+        <employees route="{{route('api.employees.getData')}}"></employees>
     </div>
 @endsection

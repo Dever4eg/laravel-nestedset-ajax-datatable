@@ -54,6 +54,7 @@
     export default {
         name: "Employees",
         components: {pagination: Pagination},
+        props: ['route'],
         created() {
             this.getEmployees();
         },
@@ -80,7 +81,7 @@
 
         methods: {
             getEmployees(page = 1) {
-                axios.get('/api/employees/getData', {params: {
+                axios.get(this.route, {params: {
                         pageSize:   this.PageSize,
                         search:     this.search,
                         sortKey:    this.sortKey,
@@ -103,7 +104,7 @@
                     this.sortKey = key;
                     this.sortDir = 'asc';
                 } else
-                    this.sortDir = this.sortDir === 'asc' ? 'desk' : 'asc';
+                    this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
 
                 this.getEmployees();
             },

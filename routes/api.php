@@ -21,3 +21,4 @@ Route::get('employees/get-tree', 'EmployeeController@LazyLoadTree')->name('api.e
 Route::get('employees/get-data', 'EmployeeController@GetData')->name('api.employees.getData');
 Route::get('employees/get-one', 'EmployeeController@show')->name('api.employees.show');
 Route::delete('employees/destroy', 'EmployeeController@destroy')->name('api.employees.destroy');
+Route::post('employees/store', 'EmployeeController@store')->name('api.employees.store');

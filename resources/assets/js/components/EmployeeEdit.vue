@@ -4,25 +4,40 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label for="fullname">Full name</label>
-                    <input v-model="employee.fullname" type="text" class="form-control" id="fullname" placeholder="Full name">
+                    <input v-validate="'required'"
+                           :class="{'is-invalid': errors.has('fullname') }"
+                           v-model="employee.fullname" name="fullname"
+                           type="text" class="form-control" id="fullname" placeholder="Full name">
+                    <span class="error">{{ errors.first('fullname') }}</span>
                 </div>
-
-
                 <div class="form-group">
                     <label for="position">Position</label>
-                    <input v-model="employee.position" type="text" class="form-control" id="position" placeholder="Position">
+                    <input v-validate="'required'"
+                           :class="{'is-invalid': errors.has('position') }"
+                           v-model="employee.position" name="position"
+                           type="text" class="form-control"
+                           id="position" placeholder="Position">
+                    <span class="error">{{ errors.first('position') }}</span>
                 </div>
                 <div class="form-group">
                     <label for="salary">Salary</label>
-                    <input v-model="employee.salary" type="number" class="form-control" id="salary" placeholder="Salary">
+                    <input v-validate="'required|integer'"
+                           :class="{'is-invalid': errors.has('salary') }"
+                           v-model="employee.salary" name="salary"
+                           type="number" class="form-control" id="salary" placeholder="Salary">
+                    <span class="error">{{ errors.first('salary') }}</span>
                 </div>
                 <div class="form-group">
                     <label for="date">Date of employment</label>
-                    <input v-model="employee.date" type="date" class="form-control" id="date" placeholder="Date">
+                    <input v-validate="'required'"
+                           :class="{'is-invalid': errors.has('date') }"
+                           v-model="employee.date" name="date"
+                           type="date" class="form-control" id="date" placeholder="Date">
+                    <span class="error">{{ errors.first('date') }}</span>
                 </div>
 
                 <div class="form-group">
-                    <label for="chief">Chief</label>
+                    <label for="chief">Chief (non require)</label>
                     <select class="form-control" id="chief"></select>
                 </div>
 
@@ -31,17 +46,19 @@
 
 
         <a class="btn btn-light pull-left" @click="closeModal">Cancel</a>
-        <button class="btn btn-warning pull-right" @click="">Save</button>
+        <button class="btn btn-warning pull-right" @click="onSubmit">Save</button>
 
     </div>
 </template>
 
 <script>
-
+    import PNotify from 'pnotify/dist/es/PNotify';
+    PNotify.defaults.styling = 'bootstrap4';
+    PNotify.defaults.delay = 1000;
 
     export default {
         name: "EmployeeEdit",
-        props: ['employeeProp'],
+        props: ['employeeProp', 'callback'],
         mounted() {
             if(this.employeeProp) this.employee = this.employeeProp;
             let select2 = $('#chief');
@@ -96,7 +113,9 @@
                     id: '',
                     fullname: '',
                     position: '',
-                    data: '',
+                    date: (function(d =new Date()) {
+                        return d.getFullYear() +'-'+("0"+(d.getMonth()+1)).slice(-2) +'-'+ ("0" + d.getDate()).slice(-2);
+                    }()),
                     salary: '',
                     chief_id: ''
                 }
@@ -107,6 +126,19 @@
                 $('#chief').select2('close');
                 this.$emit('close');
             },
+            onSubmit () {
+                this.$validator.validate().then(result => {
+                    if(!result) return;
+                    console.log(this.employee);
+                    axios.post('api/employees/store', this.employee).then(response => {
+                        PNotify.success({text: response.data});
+                        if(this.callback) this.callback();
+                    }).catch(error => {
+                        PNotify.error({text: error});
+                    });
+                    this.$emit('close');
+                });
+            }
         }
     }
 </script>
@@ -114,5 +146,8 @@
 <style scoped lang="scss">
     .avatar {
         padding-bottom: 20px;
+    }
+    .error {
+        color: #b30001;
     }
 </style>

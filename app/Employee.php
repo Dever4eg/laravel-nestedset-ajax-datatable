@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Employee extends Model
 {
 
+    protected $fillable = ['fullname', 'position', 'salary', 'date', 'chief_id'];
+
     public function subordinates()
     {
         return $this->hasMany('App\Employee', 'chief_id');

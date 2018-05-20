@@ -25,6 +25,24 @@ class EmployeeController extends Controller
             response("Error 404", 404);
     }
 
+    public function store(Request $request) {
+        $v = $request->validate([
+            'id'        => 'nullable|integer|min:0',
+            'fullname'  => 'required|string',
+            'position'  => 'required|string',
+            'salary'    => 'required|integer|min:0',
+            'date'      => 'required|date',
+            'chief_id'  => 'nullable|integer|min:0'
+        ]);
+
+
+        $employee = Employee::find($v['id']);
+        $employee = !empty($employee) ? $employee : new Employee();
+        if( $employee->fill($v)->save() )
+            return response()->json('Employee was updated', 200);
+        return response()->json("Error. Employee was not updated");
+    }
+
     public function show(Request $request)
     {
         $id = $request->validate(['id' => 'required|integer|min:1'])['id'];

@@ -17,11 +17,14 @@ window.Vue = require('vue');
 
 Vue.component('employees', require('./components/Employees.vue'));
 import VModal from 'vue-js-modal';
+import VeeValidate from 'vee-validate';
 
 require('select2');
 
-
 Vue.use(VModal, { dynamic: true });
+Vue.use(VeeValidate, {
+    events: 'blur|change|custom'
+});
 
 
 const app = new Vue({

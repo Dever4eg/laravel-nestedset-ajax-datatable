@@ -3,15 +3,19 @@
 
         <modals-container/>
 
-        <div class="tableFilters">
-            <input class="form-control search" type="text" v-model="search" placeholder="Search" @input="getEmployees()">
-            <div class="pull-right form-inline">
-                <select class="form-control" v-model="PageSize" @change="getEmployees()">
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="30">30</option>
-                </select>
-                <button @click="employeeEdit" class="btn btn-primary form-control create-btn"><i class="fa fa-plus-circle"></i></button>
+        <div class="tableFilters row">
+            <div class="col-md-6">
+                <input class="form-control search" type="text" v-model="search" placeholder="Search" @input="getEmployees()">
+            </div>
+            <div class="col-md-6">
+                <div class="form-inline pull-right">
+                    <select class="form-control" v-model="PageSize" @change="getEmployees()">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                    </select>
+                    <button @click="employeeEdit()" class="btn btn-primary form-control create-btn">New <i class="fa fa-plus-circle"></i></button>
+                </div>
             </div>
             <div class="clearfix"></div>
         </div>
@@ -112,7 +116,6 @@
                         this.PageCount = response.last_page;
                         this.$refs.paginate.selected = response.current_page-1;
 
-                        this.employeeEdit(this.employees[1]);
                     })
                     .catch(errors => {
                         console.log(errors);
@@ -138,7 +141,7 @@
             },
             employeeEdit(employee) {
                 this.$modal.show(EmployeeEdit, {
-                    employeeProp: employee
+                    employeeProp: employee,
                 }, {
                     scrollable: true,
                     'clickToClose': false,
@@ -163,8 +166,7 @@
         .tableFilters {
             margin-bottom: 10px;
             .search {
-                width: 400px;
-                max-width: 80%;
+                width: 100%;
                 float: left;
             }
         }
@@ -178,6 +180,10 @@
         }
         .create-btn {
             margin-left: 10px;
+            width: 100px;
+        }
+        select {
+            width: 100px;
         }
     }
 

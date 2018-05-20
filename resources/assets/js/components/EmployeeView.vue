@@ -28,7 +28,7 @@
 
 <style scoped lang="scss">
     .employee-view {
-        padding: 25px;
+
         .fullname {
             color: #444;
             text-decoration: underline;

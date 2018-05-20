@@ -24,18 +24,20 @@
                         <i class="fa" aria-hidden="true"
                            :class="column.name === sortKey ? (sortDir === 'asc' ? 'fa-sort-down' : 'fa-sort-up') : 'fa-sort'"></i>
                     </th>
-                    <th>Control</th>
+                    <th><div class="pull-right">Control</div></th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="employee in employees" :key="employee.fullname">
+                <tr v-for="employee in employees" :key="employee.id">
                     <td v-for="column in columns">
                         {{employee[column.name]}}
                     </td>
                     <td>
-                        <a @click="employeeView(employee)" class="btn btn-primary btn-sm btn-control"><i class="fa fa-eye"></i></a>
-                        <a @click="employeeEdit(employee)" class="btn btn-warning btn-sm btn-control"><i class="fa fa-edit"></i></a>
-                        <a @click="employeeDelete(employee)" class="btn btn-danger btn-sm btn-control"><i class="fa fa-trash"></i></a>
+                        <div class="pull-right">
+                            <a @click="employeeView(employee)" class="btn btn-primary btn-sm btn-control"><i class="fa fa-eye"></i></a>
+                            <a @click="employeeEdit(employee)" class="btn btn-warning btn-sm btn-control"><i class="fa fa-edit"></i></a>
+                            <a @click="employeeDelete(employee)" class="btn btn-danger btn-sm btn-control"><i class="fa fa-trash"></i></a>
+                        </div>
                     </td>
                 </tr>
             </tbody>
@@ -63,10 +65,12 @@
     import EmployeeEdit from './EmployeeEdit.vue';
     import EmployeeDelete from './EmployeeDelete.vue';
 
+
+
     export default {
         name: "Employees",
         components: {pagination: Pagination},
-        props: ['route'],
+        props: [],
         created() {
             this.getEmployees();
         },
@@ -93,7 +97,7 @@
 
         methods: {
             getEmployees(page = 1) {
-                axios.get(this.route, {params: {
+                axios.get('/api/employees/get-data', {params: {
                         pageSize:   this.PageSize,
                         search:     this.search,
                         sortKey:    this.sortKey,
@@ -143,15 +147,15 @@
             },
             employeeDelete(employee) {
                 this.$modal.show(EmployeeDelete, {
-                    employee: employee
+                    employee: employee,
+                    callback: this.getEmployees
                 }, {
+                    name: 'delete',
                     'clickToClose': false,
                     height: 'auto'
-                }, {
-                    'closed': this.getEmployees
                 });
-            }
-        }
+            },
+        },
     }
 </script>
 

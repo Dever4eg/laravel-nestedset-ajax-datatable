@@ -18,6 +18,13 @@ class EmployeeController extends Controller
         return view('dataview');
     }
 
+    public function destroy(Request $request) {
+        $id = $request->validate(['id' => 'required|integer|min:1'])['id'];
+        return Employee::destroy($id) ?
+            response("Deleted", 200) :
+            response("Error 404", 404);
+    }
+
 
     public function GetData(Request $request)
     {
@@ -33,7 +40,8 @@ class EmployeeController extends Controller
         $sortDir    = $validated['sortDir'];
         $search     = $validated['search'];
 
-        $query = Employee::select('id', 'fullname', 'position', 'date', 'salary')->orderBy($sortKey, $sortDir);
+        $query = Employee::select('id', 'fullname', 'position', 'date', 'salary')
+            ->orderBy($sortKey, $sortDir);
 
         if ($search) {
             $query->where(function($query) use ($search) {

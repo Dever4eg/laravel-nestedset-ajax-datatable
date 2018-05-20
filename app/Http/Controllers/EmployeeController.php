@@ -25,6 +25,11 @@ class EmployeeController extends Controller
             response("Error 404", 404);
     }
 
+    public function show(Request $request)
+    {
+        $id = $request->validate(['id' => 'required|integer|min:1'])['id'];
+        return Employee::find($id);
+    }
 
     public function GetData(Request $request)
     {
@@ -40,7 +45,7 @@ class EmployeeController extends Controller
         $sortDir    = $validated['sortDir'];
         $search     = $validated['search'];
 
-        $query = Employee::select('id', 'fullname', 'position', 'date', 'salary')
+        $query = Employee::select('id', 'fullname', 'position', 'date', 'salary', 'chief_id')
             ->orderBy($sortKey, $sortDir);
 
         if ($search) {

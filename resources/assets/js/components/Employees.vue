@@ -5,12 +5,13 @@
 
         <div class="tableFilters">
             <input class="form-control search" type="text" v-model="search" placeholder="Search" @input="getEmployees()">
-            <div class="select">
+            <div class="pull-right form-inline">
                 <select class="form-control" v-model="PageSize" @change="getEmployees()">
                     <option value="10">10</option>
                     <option value="20">20</option>
                     <option value="30">30</option>
                 </select>
+                <button @click="employeeEdit" class="btn btn-primary form-control create-btn"><i class="fa fa-plus-circle"></i></button>
             </div>
             <div class="clearfix"></div>
         </div>
@@ -79,7 +80,7 @@
                 {width: '25%', label: 'Fullname', name: 'fullname' },
                 {width: '25%', label: 'Position', name: 'position'},
                 {width: '15%', label: 'Date', name: 'date'},
-                {width: '10%', label: 'Salary', name: 'salary'}
+                {width: '15%', label: 'Salary', name: 'salary'}
             ];
 
             return {
@@ -111,7 +112,7 @@
                         this.PageCount = response.last_page;
                         this.$refs.paginate.selected = response.current_page-1;
 
-
+                        this.employeeEdit(this.employees[1]);
                     })
                     .catch(errors => {
                         console.log(errors);
@@ -137,12 +138,11 @@
             },
             employeeEdit(employee) {
                 this.$modal.show(EmployeeEdit, {
-                    employee: employee
+                    employeeProp: employee
                 }, {
+                    scrollable: true,
                     'clickToClose': false,
                     height: 'auto'
-                }, {
-                    'closed': this.getEmployees
                 });
             },
             employeeDelete(employee) {
@@ -150,7 +150,6 @@
                     employee: employee,
                     callback: this.getEmployees
                 }, {
-                    name: 'delete',
                     'clickToClose': false,
                     height: 'auto'
                 });
@@ -168,17 +167,18 @@
                 max-width: 80%;
                 float: left;
             }
-            .select {
-                float: right;
-            }
         }
         .table {
             width: 100%;
         }
-    }
-    .btn-control{
-        i.fa {
-            color: #fff;
+        .btn-control{
+            i.fa {
+                color: #fff;
+            }
+        }
+        .create-btn {
+            margin-left: 10px;
         }
     }
+
 </style>

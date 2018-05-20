@@ -12,7 +12,7 @@
     PNotify.defaults.delay = 1000;
 
     export default {
-        name: "EmployeeView",
+        name: "EmployeeDelete",
         props: ['employee', 'callback'],
         methods: {
             remove() {

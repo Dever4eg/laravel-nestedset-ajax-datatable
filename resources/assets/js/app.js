@@ -16,10 +16,13 @@ window.Vue = require('vue');
  */
 
 Vue.component('employees', require('./components/Employees.vue'));
-
 import VModal from 'vue-js-modal';
 
+require('select2');
+
+
 Vue.use(VModal, { dynamic: true });
+
 
 const app = new Vue({
     el: '#app'

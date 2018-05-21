@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EmployeeController extends Controller
 {
@@ -20,9 +21,16 @@ class EmployeeController extends Controller
 
     public function destroy(Request $request) {
         $id = $request->validate(['id' => 'required|integer|min:1'])['id'];
-        return Employee::destroy($id) ?
-            response("Deleted", 200) :
-            response("Error 404", 404);
+        $elployee = Employee::findOrFail($id);
+
+        DB::transaction(function () use ($id, $elployee) {
+            Employee::where('chief_id', $id)
+                ->update(['chief_id' => $elployee->chief_id]);
+
+            $elployee->delete();
+        });
+
+        return response("Employee deleted", 200);
     }
 
     public function store(Request $request) {

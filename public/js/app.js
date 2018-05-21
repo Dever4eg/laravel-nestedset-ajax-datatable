@@ -64811,8 +64811,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         employeeEdit: function employeeEdit(employee) {
+            var _this2 = this;
+
             this.$modal.show(__WEBPACK_IMPORTED_MODULE_2__EmployeeEdit_vue___default.a, {
-                employeeProp: employee
+                employeeProp: employee,
+                callback: function callback() {
+                    var update_table = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+                    !update_table || _this2.getEmployees();
+                }
             }, {
                 scrollable: true,
                 'clickToClose': false,
@@ -65224,10 +65231,10 @@ __WEBPACK_IMPORTED_MODULE_0_pnotify_dist_es_PNotify__["a" /* default */].default
 
             this.$validator.validate().then(function (result) {
                 if (!result) return;
-                console.log(_this2.employee);
                 axios.post('api/employees/store', _this2.employee).then(function (response) {
                     __WEBPACK_IMPORTED_MODULE_0_pnotify_dist_es_PNotify__["a" /* default */].success({ text: response.data });
-                    if (_this2.callback) _this2.callback();
+                    // callback, (true) for update table
+                    if (_this2.callback) _this2.callback(!_this2.employee.id);
                 }).catch(function (error) {
                     __WEBPACK_IMPORTED_MODULE_0_pnotify_dist_es_PNotify__["a" /* default */].error({ text: error });
                 });

@@ -142,6 +142,9 @@
             employeeEdit(employee) {
                 this.$modal.show(EmployeeEdit, {
                     employeeProp: employee,
+                    callback: (update_table = false) => {
+                        !update_table || this.getEmployees();
+                    }
                 }, {
                     scrollable: true,
                     'clickToClose': false,

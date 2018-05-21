@@ -129,10 +129,10 @@
             onSubmit () {
                 this.$validator.validate().then(result => {
                     if(!result) return;
-                    console.log(this.employee);
                     axios.post('api/employees/store', this.employee).then(response => {
                         PNotify.success({text: response.data});
-                        if(this.callback) this.callback();
+                        // callback, (true) for update table
+                        if(this.callback) this.callback(!this.employee.id);
                     }).catch(error => {
                         PNotify.error({text: error});
                     });

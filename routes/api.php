@@ -22,3 +22,4 @@ Route::get('employees/get-data', 'EmployeeController@GetData')->name('api.employ
 Route::get('employees/get-one', 'EmployeeController@show')->name('api.employees.show');
 Route::delete('employees/destroy', 'EmployeeController@destroy')->name('api.employees.destroy');
 Route::post('employees/store', 'EmployeeController@store')->name('api.employees.store');
+Route::post('employees/update-chief', 'EmployeeController@UpdateChief')->name('api.employees.updateChief');

@@ -64623,7 +64623,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n.employees .tableFilters[data-v-5d933644] {\n  margin-bottom: 10px;\n}\n.employees .tableFilters .search[data-v-5d933644] {\n    width: 100%;\n    float: left;\n}\n.employees .table[data-v-5d933644] {\n  width: 100%;\n}\n.employees .btn-control i.fa[data-v-5d933644] {\n  color: #fff;\n}\n.employees .create-btn[data-v-5d933644] {\n  margin-left: 10px;\n  width: 100px;\n}\n.employees select[data-v-5d933644] {\n  width: 100px;\n}\n", ""]);
+exports.push([module.i, "\n.employees .tableFilters[data-v-5d933644] {\n  margin-bottom: 10px;\n}\n.employees .tableFilters .search[data-v-5d933644] {\n    width: 100%;\n    float: left;\n    margin-bottom: 10px;\n}\n.employees .table[data-v-5d933644] {\n  width: 100%;\n}\n.employees .btn-control[data-v-5d933644] {\n  min-width: 32px;\n  margin: 2px;\n}\n.employees .btn-control i.fa[data-v-5d933644] {\n    color: #fff;\n}\n.employees .create-btn[data-v-5d933644] {\n  margin-left: 10px;\n  width: 100px;\n}\n.employees select[data-v-5d933644] {\n  width: 100px;\n}\n", ""]);
 
 // exports
 
@@ -64755,7 +64755,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.getEmployees();
     },
     data: function data() {
-        var columns = [{ width: '25%', label: 'Fullname', name: 'fullname' }, { width: '25%', label: 'Position', name: 'position' }, { width: '15%', label: 'Date', name: 'date' }, { width: '15%', label: 'Salary', name: 'salary' }];
+        var columns = [{ width: '23%', label: 'Fullname', name: 'fullname' }, { width: '23%', label: 'Position', name: 'position' }, { width: '16%', label: 'Date', name: 'date' }, { width: '17%', label: 'Salary', name: 'salary' }];
 
         return {
             employees: [],
@@ -65754,7 +65754,7 @@ var render = function() {
         _c("div", { staticClass: "clearfix" })
       ]),
       _vm._v(" "),
-      _c("table", { staticClass: "table" }, [
+      _c("table", { staticClass: "table table-responsive-sm" }, [
         _c("thead", [
           _c(
             "tr",

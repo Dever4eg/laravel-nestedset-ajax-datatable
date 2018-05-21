@@ -20,7 +20,7 @@
             <div class="clearfix"></div>
         </div>
 
-        <table class="table">
+        <table class="table table-responsive-sm">
             <thead>
                 <tr>
                     <th v-for="column in columns" :key="column.name" @click="sortBy(column.name)"
@@ -81,10 +81,10 @@
         },
         data() {
             let columns = [
-                {width: '25%', label: 'Fullname', name: 'fullname' },
-                {width: '25%', label: 'Position', name: 'position'},
-                {width: '15%', label: 'Date', name: 'date'},
-                {width: '15%', label: 'Salary', name: 'salary'}
+                {width: '23%', label: 'Fullname', name: 'fullname' },
+                {width: '23%', label: 'Position', name: 'position'},
+                {width: '16%', label: 'Date', name: 'date'},
+                {width: '17%', label: 'Salary', name: 'salary'}
             ];
 
             return {
@@ -168,12 +168,15 @@
             .search {
                 width: 100%;
                 float: left;
+                margin-bottom: 10px;
             }
         }
         .table {
             width: 100%;
         }
         .btn-control{
+            min-width: 32px;
+            margin: 2px;
             i.fa {
                 color: #fff;
             }

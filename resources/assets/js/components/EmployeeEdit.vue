@@ -136,6 +136,7 @@
                     }).catch(error => {
                         PNotify.error({text: error});
                     });
+                    $('#chief').select2('close');
                     this.$emit('close');
                 });
             }

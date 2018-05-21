@@ -65238,6 +65238,7 @@ __WEBPACK_IMPORTED_MODULE_0_pnotify_dist_es_PNotify__["a" /* default */].default
                 }).catch(function (error) {
                     __WEBPACK_IMPORTED_MODULE_0_pnotify_dist_es_PNotify__["a" /* default */].error({ text: error });
                 });
+                $('#chief').select2('close');
                 _this2.$emit('close');
             });
         }

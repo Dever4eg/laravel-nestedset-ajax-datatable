@@ -73,6 +73,7 @@
                             sortDir: 'asc',
                             page: params.term ? params.term : 1,
                             search: params.term ? params.term : '',
+                            api_token: window.api_token,
                         };
                     },
                     processResults: function (response) {

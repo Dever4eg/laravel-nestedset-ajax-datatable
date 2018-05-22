@@ -14375,6 +14375,13 @@ if (token) {
   console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
+var api_token = document.head.querySelector('meta[name="api-token"]');
+
+if (api_token) {
+  window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + api_token.content;
+}
+window.api_token = api_token.content;
+
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
@@ -65169,7 +65176,8 @@ __WEBPACK_IMPORTED_MODULE_0_pnotify_dist_es_PNotify__["a" /* default */].default
                         sortKey: 'fullname',
                         sortDir: 'asc',
                         page: params.term ? params.term : 1,
-                        search: params.term ? params.term : ''
+                        search: params.term ? params.term : '',
+                        api_token: window.api_token
                     };
                 },
                 processResults: function processResults(response) {

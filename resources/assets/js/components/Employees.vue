@@ -23,22 +23,26 @@
         <table class="table table-responsive-sm">
             <thead>
                 <tr>
+                    <th>Avatar</th>
                     <th v-for="column in columns" :key="column.name" @click="sortBy(column.name)"
                         :style="'width:'+column.width+';'+'cursor:pointer;'">
                         {{column.label}}
                         <i class="fa" aria-hidden="true"
                            :class="column.name === sortKey ? (sortDir === 'asc' ? 'fa-sort-down' : 'fa-sort-up') : 'fa-sort'"></i>
                     </th>
-                    <th><div class="pull-right">Control</div></th>
+                    <th><div class="">Control</div></th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="employee in employees" :key="employee.id">
+                    <td>
+                        <img :src="'/storage/avatars/thumbnails/'+(employee.avatar ? employee.avatar : 'default.jpg')" alt="avatar">
+                    </td>
                     <td v-for="column in columns">
                         {{employee[column.name]}}
                     </td>
                     <td>
-                        <div class="pull-right">
+                        <div class="">
                             <a @click="employeeView(employee)" class="btn btn-primary btn-sm btn-control"><i class="fa fa-eye"></i></a>
                             <a @click="employeeEdit(employee)" class="btn btn-warning btn-sm btn-control"><i class="fa fa-edit"></i></a>
                             <a @click="employeeDelete(employee)" class="btn btn-danger btn-sm btn-control"><i class="fa fa-trash"></i></a>
@@ -84,7 +88,7 @@
                 {width: '23%', label: 'Fullname', name: 'fullname' },
                 {width: '23%', label: 'Position', name: 'position'},
                 {width: '16%', label: 'Date', name: 'date'},
-                {width: '17%', label: 'Salary', name: 'salary'}
+                {width: '13%', label: 'Salary', name: 'salary'}
             ];
 
             return {

@@ -1,7 +1,7 @@
 <template>
     <div class="employee-edit">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <div class="form-group">
                     <label for="fullname">Full name</label>
                     <input v-validate="'required'"
@@ -21,7 +21,7 @@
                 </div>
                 <div class="form-group">
                     <label for="salary">Salary</label>
-                    <input v-validate="'required|integer'"
+                    <input v-validate="'required|integer|min:0'"
                            :class="{'is-invalid': errors.has('salary') }"
                            v-model="employee.salary" name="salary"
                            type="number" class="form-control" id="salary" placeholder="Salary">
@@ -40,13 +40,27 @@
                     <label for="chief">Chief (non require)</label>
                     <select class="form-control" id="chief"></select>
                 </div>
-
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="avatar">Avatar</label>
+                    <input v-validate="'image|max:2048'"
+                           :class="{'is-invalid': errors.has('avatar') }"
+                           name="avatar" type="file" class="" id="avatar"
+                           @change="onFileChanged">
+                    <span class="error">{{ errors.first('avatar') }}</span>
+                    <img id="avatar-img" :src="avatarSrc"
+                         alt="avatar" class="img-fluid avatar">
+                </div>
+                <div v-if="progress.visibility" class="progress">
+                    <div class="progress-bar" role="progressbar" :style="{width: progress.value*100 + '%'}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
             </div>
         </div>
 
 
         <a class="btn btn-light pull-left" @click="closeModal">Cancel</a>
-        <button class="btn btn-warning pull-right" @click="onSubmit">Save</button>
+        <a class="btn btn-warning pull-right" @click="onSubmit" :class="submitBtn.disabled ? 'disabled' : ''" >Save</a>
 
     </div>
 </template>
@@ -97,6 +111,8 @@
             }).on('select2:select', (element) => {
                 this.employee.chief_id = element.params.data.id;
             });
+            this.avatarSrc = '/storage/avatars/'+(this.employee.avatar ? this.employee.avatar : 'default.jpg');
+
             if(this.employee.chief_id) {
                 axios.get('api/employees/get-one', {params: {
                         id: this.employee.chief_id
@@ -110,6 +126,15 @@
         },
         data() {
             return {
+                progress: {
+                    visibility: false,
+                    value: 0,
+                },
+                avatarObj: '',
+                avatarSrc: '',
+                submitBtn: {
+                    disabled: false,
+                },
                 employee: {
                     id: '',
                     fullname: '',
@@ -118,7 +143,8 @@
                         return d.getFullYear() +'-'+("0"+(d.getMonth()+1)).slice(-2) +'-'+ ("0" + d.getDate()).slice(-2);
                     }()),
                     salary: '',
-                    chief_id: ''
+                    chief_id: '',
+                    avatar: '',
                 }
             }
         },
@@ -127,27 +153,49 @@
                 $('#chief').select2('close');
                 this.$emit('close');
             },
+            onFileChanged (event) {
+                 this.avatarSrc = URL.createObjectURL(event.target.files[0]);
+                 this.avatarObj = event.target.files[0];
+            },
             onSubmit () {
                 this.$validator.validate().then(result => {
                     if(!result) return;
-                    axios.post('api/employees/store', this.employee).then(response => {
-                        PNotify.success({text: response.data});
+
+                    let formdata = new FormData();
+
+                    for (var prop in this.employee)
+                        formdata.append(prop, this.employee[prop]);
+                    formdata.append('avatar', this.avatarObj);
+
+                    axios.post('api/employees/store', formdata, {
+                        onUploadProgress: progressEvent => {
+                            this.progress.visibility = true;
+                            this.submitBtn.disabled = true;
+                            this.progress.value = progressEvent.loaded / progressEvent.total;
+                        }
+                    }).then(response => {
+                        this.employee.avatar = response.data.avatar ? response.data.avatar : 'default.jpg';
+                        this.closeModal();
+                        PNotify.success({text: response.data.message});
                         // callback, (true) for update table
                         if(this.callback) this.callback(!this.employee.id);
                     }).catch(error => {
+                        this.progress.visibility = false;
+                        this.submitBtn.disabled = false;
+                        console.log(error);
                         PNotify.error({text: error});
                     });
-                    $('#chief').select2('close');
-                    this.$emit('close');
+
                 });
-            }
+            },
+
         }
     }
 </script>
 
 <style scoped lang="scss">
     .avatar {
-        padding-bottom: 20px;
+        padding: 20px 0;
     }
     .error {
         color: #b30001;

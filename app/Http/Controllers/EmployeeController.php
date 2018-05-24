@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class EmployeeController extends Controller
 {
@@ -21,33 +23,72 @@ class EmployeeController extends Controller
 
     public function destroy(Request $request) {
         $id = $request->validate(['id' => 'required|integer|min:1'])['id'];
-        $elployee = Employee::findOrFail($id);
+        $employee = Employee::findOrFail($id);
 
-        DB::transaction(function () use ($id, $elployee) {
+        $avatar = $employee->avatar;
+
+        DB::transaction(function () use ($id, $employee) {
             Employee::where('chief_id', $id)
-                ->update(['chief_id' => $elployee->chief_id]);
+                ->update(['chief_id' => $employee->chief_id]);
 
-            $elployee->delete();
+            $employee->delete();
         });
+
+        if(!empty($avatar)) {
+            Storage::delete('avatars/' . $avatar);
+            Storage::delete('avatars/thumbnails/' . $avatar);
+        }
 
         return response("Employee deleted", 200);
     }
 
     public function store(Request $request) {
+
         $v = $request->validate([
             'id'        => 'nullable|integer|min:0',
             'fullname'  => 'required|string',
             'position'  => 'required|string',
             'salary'    => 'required|integer|min:0',
             'date'      => 'required|date',
-            'chief_id'  => 'nullable|integer|min:0'
+            'chief_id'  => 'nullable|integer|min:0',
+            'avatar'    => 'nullable|image|max:2048',
         ]);
 
 
         $employee = Employee::find($v['id']);
         $employee = !empty($employee) ? $employee : new Employee();
-        if( $employee->fill($v)->save() )
-            return response()->json('Employee was updated', 200);
+
+        $employee->fill($v);
+
+        if($request->hasFile('avatar')) {
+            $image = $request->file('avatar');
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+
+            $file = Image::make($image)->resize(600, null, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+            Storage::put('avatars/'. $filename, $file->stream()->__toString());
+
+            $file = Image::make($image)->resize(100, null, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+
+            Storage::put('avatars/thumbnails/'.$filename, $file->stream()->__toString());
+
+            if(!empty($employee->avatar)) {
+                Storage::delete('avatars/' . $employee->avatar);
+                Storage::delete('avatars/thumbnails/' . $employee->avatar);
+            }
+            $employee->avatar = $filename;
+        }
+
+        if( $employee->save() )
+            return response()->json([
+                'message' => 'Employee was updated',
+                'avatar' => isset($filename) ? $filename : $employee->avatar,
+            ], 200);
         return response()->json("Error. Employee was not updated");
     }
 
@@ -71,7 +112,7 @@ class EmployeeController extends Controller
         $sortDir    = $validated['sortDir'];
         $search     = $validated['search'];
 
-        $query = Employee::select('id', 'fullname', 'position', 'date', 'salary', 'chief_id')
+        $query = Employee::select('id', 'fullname', 'position', 'date', 'salary', 'chief_id', 'avatar')
             ->orderBy($sortKey, $sortDir);
 
         if ($search) {

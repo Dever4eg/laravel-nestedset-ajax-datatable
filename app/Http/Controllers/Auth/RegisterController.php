@@ -28,7 +28,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo;
 
     /**
      * Create a new controller instance.
@@ -37,6 +37,7 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
+        $this->redirectTo = route('employees.datatable');
         $this->middleware('guest');
     }
 
@@ -67,7 +68,6 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'api_token' => bin2hex(openssl_random_pseudo_bytes(30)),
         ]);
     }
 }

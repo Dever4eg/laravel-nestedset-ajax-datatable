@@ -8,7 +8,7 @@
                 <p>Salary: {{employee.salary}}</p>
             </div>
             <div class="col-md-6">
-                <img class="img-fluid avatar" src="http://www.zastavki.com/pictures/1024x1024/2015/Girls_Smiling_beautiful_girl__photo_George_Chernyad_ev_111193_31.jpg"
+                <img class="img-fluid avatar" :src="'/storage/avatars/'+(employee.avatar ? employee.avatar : 'default.jpg')"
                      alt="avatar">
             </div>
         </div>

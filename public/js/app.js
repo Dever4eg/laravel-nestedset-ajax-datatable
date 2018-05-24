@@ -64978,6 +64978,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: "EmployeeView",
@@ -65006,7 +65007,9 @@ var render = function() {
         _vm._v(" "),
         _c("p", [_vm._v("Employed since: " + _vm._s(_vm.employee.date))]),
         _vm._v(" "),
-        _c("p", [_vm._v("Salary: " + _vm._s(_vm.employee.salary))])
+        _c("p", [_vm._v("Salary: " + _vm._s(_vm.employee.salary))]),
+        _vm._v(" "),
+        _c("p", [_vm._v("Chief: " + _vm._s(_vm.employee.chief.fullname))])
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "col-md-6" }, [
@@ -65261,15 +65264,10 @@ __WEBPACK_IMPORTED_MODULE_0_pnotify_dist_es_PNotify__["a" /* default */].default
         });
         this.avatarSrc = '/storage/avatars/' + (this.employee.avatar ? this.employee.avatar : 'default.jpg');
 
-        if (this.employee.chief_id) {
-            axios.get('api/employees/get-one', { params: {
-                    id: this.employee.chief_id
-                }
-            }).then(function (response) {
-                var chief = response.data;
-                var option = new Option(chief.fullname, chief.id, true, true);
-                select2.append(option);
-            });
+        if (this.employee.chief) {
+            var chief = this.employee.chief;
+            var option = new Option(chief.fullname, chief.id, true, true);
+            select2.append(option);
         }
     },
     data: function data() {

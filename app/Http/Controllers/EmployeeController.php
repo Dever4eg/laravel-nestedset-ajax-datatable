@@ -113,6 +113,7 @@ class EmployeeController extends Controller
         $search     = $validated['search'];
 
         $query = Employee::select('id', 'fullname', 'position', 'date', 'salary', 'chief_id', 'avatar')
+            ->with('chief')
             ->orderBy($sortKey, $sortDir);
 
         if ($search) {

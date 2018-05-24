@@ -113,15 +113,10 @@
             });
             this.avatarSrc = '/storage/avatars/'+(this.employee.avatar ? this.employee.avatar : 'default.jpg');
 
-            if(this.employee.chief_id) {
-                axios.get('api/employees/get-one', {params: {
-                        id: this.employee.chief_id
-                    }
-                }).then(response => {
-                    let chief = response.data;
-                    let option = new Option( chief.fullname, chief.id, true, true);
-                    select2.append(option);
-                });
+            if(this.employee.chief) {
+                let chief = this.employee.chief;
+                let option = new Option( chief.fullname, chief.id, true, true);
+                select2.append(option);
             }
         },
         data() {

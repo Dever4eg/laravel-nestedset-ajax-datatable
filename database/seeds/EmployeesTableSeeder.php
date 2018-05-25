@@ -13,35 +13,28 @@ class EmployeesTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Employee::class, 20)->create([
-            'position' => "directior",
-        ])->each(function ($employee) {
-            factory(App\Employee::class, 5)->create([
-                'position'  => "directior",
-                'chief_id'  => $employee->id
-            ])->each(function ($employee) {
-                factory(App\Employee::class, 5)->create([
-                    'position'  => "directior",
-                    'chief_id'  => $employee->id
-                ])->each(function ($employee) {
-                    factory(App\Employee::class, 5)->create([
-                        'position'  => "directior",
-                        'chief_id'  => $employee->id
-                    ])->each(function ($employee) {
-                        factory(App\Employee::class, 5)->create([
-                            'position'  => "directior",
-                            'chief_id'  => $employee->id
-                        ])->each(function ($employee) {
-                            factory(App\Employee::class, 5)->create([
-                                'position'  => "directior",
-                                'chief_id'  => $employee->id
-                            ])->each(function ($employee) {
+        $root = factory(App\Employee::class)->create(['position' => 'General director']);
 
-                            });
-                        });
-                    });
-                });
-            });
+        $users = factory(App\Employee::class, 15)->create()->each(function ($user) use ($root) {
+            $user->chief_id = $root->id;
+            $user->save();
         });
+
+        $users = factory(App\Employee::class, 200)->create()->each(function ($user) use ($users) {
+            $user->chief_id = $users[rand(0, count($users)-1)]->id;
+            $user->save();
+        });
+
+        $users = factory(App\Employee::class, 4684)->create()->each(function ($user) use ($users) {
+            $user->chief_id = $users[rand(0, count($users)-1)]->id;
+            $user->save();
+        });
+
+        for($i=0; $i<3;$i++) {
+            factory(App\Employee::class, 15000)->create()->each(function ($user) use ($users) {
+                $user->chief_id = $users[rand(0, count($users)-1)]->id;
+                $user->save();
+            });
+        }
     }
 }

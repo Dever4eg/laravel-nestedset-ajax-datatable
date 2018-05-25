@@ -9,7 +9,7 @@
                 <p>Chief: {{employee.chief.fullname}}</p>
             </div>
             <div class="col-md-6">
-                <img class="img-fluid avatar" :src="'/storage/avatars/'+(employee.avatar ? employee.avatar : 'default.jpg')"
+                <img class="img-fluid avatar" :src="avatarsUrl+(employee.avatar ? employee.avatar : 'default.jpg')"
                      alt="avatar">
             </div>
         </div>
@@ -20,7 +20,7 @@
 <script>
     export default {
         name: "EmployeeView",
-        props: ['employee'],
+        props: ['employee', 'avatarsUrl'],
         methods: {
 
         }

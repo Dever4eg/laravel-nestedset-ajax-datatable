@@ -36,7 +36,7 @@
             <tbody>
                 <tr v-for="employee in employees" :key="employee.id">
                     <td>
-                        <img :src="'/storage/avatars/thumbnails/'+(employee.avatar ? employee.avatar : 'default.jpg')" alt="avatar">
+                        <img :src="avatarsUrl + 'thumbnails/'+(employee.avatar ? employee.avatar : 'default.jpg')" alt="avatar">
                     </td>
                     <td v-for="column in columns">
                         {{employee[column.name]}}
@@ -79,7 +79,7 @@
     export default {
         name: "Employees",
         components: {pagination: Pagination},
-        props: [],
+        props: ['avatarsUrl'],
         created() {
             this.getEmployees();
         },
@@ -136,7 +136,8 @@
             },
             employeeView(employee) {
                 this.$modal.show(EmployeeView, {
-                    employee: employee
+                    employee: employee,
+                    avatarsUrl: this.avatarsUrl,
                 }, {
                     scrollable: true,
                     'clickToClose': false,
@@ -146,6 +147,7 @@
             employeeEdit(employee) {
                 this.$modal.show(EmployeeEdit, {
                     employeeProp: employee,
+                    avatarsUrl: this.avatarsUrl,
                     callback: (update_table = false) => {
                         !update_table || this.getEmployees();
                     }

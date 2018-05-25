@@ -1,4 +1,11 @@
 {
+    "name": "app-name",
+    "description": "some desc",
+    "version": "0.0.1",
+    "engines": {
+        "node": "8.11.1",
+        "npm": "6.1.0"
+    },
     "private": true,
     "scripts": {
         "dev": "npm run development",
@@ -7,28 +14,29 @@
         "watch-poll": "npm run watch -- --watch-poll",
         "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
         "prod": "npm run production",
-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "postinstall": "npm run prod"
     },
     "devDependencies": {
+        "webpack-livereload-plugin": "1"
+    },
+    "dependencies": {
+        "ajv": "^6.0.0",
+        "cross-env": "^5.1",
+        "lodash": "^4.17.4",
         "axios": "^0.18",
         "bootstrap": "^4.1.1",
         "bootstrap-tree-view": "^1.8.0",
-        "cross-env": "^5.1",
         "font-awesome": "^4.7.0",
         "gijgo": "^1.9.6",
         "jquery": "^3.3.1",
         "laravel-mix": "^2.0",
-        "lodash": "^4.17.4",
-        "popper.js": "^1.14.3",
-        "vue": "^2.5.7",
-        "vuejs-paginate": "^1.9.1"
-    },
-    "dependencies": {
-        "ajv": "^6.0.0",
         "pnotify": "^4.0.0-alpha.4",
         "select2": "^4.0.6-rc.1",
         "vee-validate": "^2.0.9",
-        "vue-js-modal": "^1.3.13",
-        "webpack-livereload-plugin": "1"
+        "popper.js": "^1.14.3",
+        "vue": "^2.5.7",
+        "vuejs-paginate": "^1.9.1",
+        "vue-js-modal": "^1.3.13"
     }
 }

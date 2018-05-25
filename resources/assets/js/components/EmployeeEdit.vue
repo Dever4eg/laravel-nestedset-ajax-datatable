@@ -72,7 +72,7 @@
 
     export default {
         name: "EmployeeEdit",
-        props: ['employeeProp', 'callback'],
+        props: ['employeeProp', 'avatarsUrl', 'callback'],
         mounted() {
             if(this.employeeProp) this.employee = this.employeeProp;
             let select2 = $('#chief');
@@ -111,7 +111,7 @@
             }).on('select2:select', (element) => {
                 this.employee.chief_id = element.params.data.id;
             });
-            this.avatarSrc = '/storage/avatars/'+(this.employee.avatar ? this.employee.avatar : 'default.jpg');
+            this.avatarSrc = this.avatarsUrl +(this.employee.avatar ? this.employee.avatar : 'default.jpg');
 
             if(this.employee.chief) {
                 let chief = this.employee.chief;

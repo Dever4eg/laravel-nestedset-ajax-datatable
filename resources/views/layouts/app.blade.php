@@ -10,7 +10,7 @@
 
     <title>Laravel</title>
 
-    <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" href="{{mix('css/app.css')}}">
     @yield('styles')
 </head>
 <body>
@@ -21,7 +21,7 @@
         @yield('content')
     </div>
 
-    <script src="/js/app.js"></script>
+    <script src="{{mix('js/app.js')}}"></script>
 
     @yield('scripts')
     @if(config('app.env') == 'local')

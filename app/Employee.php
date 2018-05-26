@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Employee extends Model
 {
 
-    protected $fillable = ['fullname', 'position', 'salary', 'date', 'chief_id'];
+    protected $fillable = ['fullname', 'position', 'salary', 'date'];
 
     public function subordinates()
     {
@@ -19,6 +19,13 @@ class Employee extends Model
         return $this->belongsTo('App\Employee', 'chief_id');
     }
 
+    public function isDescendant($id)
+    {
+        $e = self::with('chief')->find($id);
+        if( empty($e) || empty($e->chief))
+            return false;
+        return $this->id == $e->chief->id || self::isDescendant($e->chief->id);
+    }
 
     public static function LazyLoadPrepare($collection, $hideProperties = null)
     {

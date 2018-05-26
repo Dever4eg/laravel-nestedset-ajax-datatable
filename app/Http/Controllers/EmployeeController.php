@@ -50,7 +50,7 @@ class EmployeeController extends Controller
             'position'  => 'required|string',
             'salary'    => 'required|integer|min:0',
             'date'      => 'required|date',
-            'chief_id'  => 'nullable|integer|min:0',
+            'chief_id'  => 'nullable|integer|min:0|different:id',
             'avatar'    => 'nullable|image|max:2048',
         ]);
 
@@ -59,6 +59,25 @@ class EmployeeController extends Controller
         $employee = !empty($employee) ? $employee : new Employee();
 
         $employee->fill($v);
+
+        // Если новый начальник является потомком даного елемента,
+        // то все дочерние елементы поднимаем на уровень выше и изменяем начальника
+        if(!empty($v['chief_id']) ) {
+            if($employee->isDescendant($v['chief_id'])) {
+
+                DB::transaction(function () use ($v, $employee) {
+                    Employee::where('chief_id', $employee->id)
+                        ->update(['chief_id' => $employee->chief_id]);
+
+                    $employee->chief_id = $v['chief_id'];
+                    $employee->save();
+                });
+            } else {
+                $employee->chief()->associate(Employee::findOrFail($v['chief_id']))->save();
+            }
+        }
+
+
 
         if($request->hasFile('avatar')) {
             $image = $request->file('avatar');

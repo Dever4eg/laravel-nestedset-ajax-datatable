@@ -177,8 +177,11 @@
                     }).catch(error => {
                         this.progress.visibility = false;
                         this.submitBtn.disabled = false;
-                        console.log(error);
-                        PNotify.error({text: error});
+
+                        let errors =  error.response.data.errors;
+                        let text = errors[Object.keys(errors)[0]][0];
+
+                        PNotify.error({text: text});
                     });
 
                 });

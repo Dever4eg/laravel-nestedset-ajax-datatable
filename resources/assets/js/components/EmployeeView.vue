@@ -6,7 +6,7 @@
                 <h3 class="position">Position: {{employee.position}}</h3>
                 <p>Employed since: {{employee.date}}</p>
                 <p>Salary: {{employee.salary}}</p>
-                <p>Chief: {{employee.chief.fullname}}</p>
+                <p v-if="employee.chief">{{ employee.chief.fullname }}</p>
             </div>
             <div class="col-md-6">
                 <img class="img-fluid avatar" :src="avatarsUrl+(employee.avatar ? employee.avatar : 'default.jpg')"

@@ -159,7 +159,7 @@
                     let formdata = new FormData();
 
                     for (var prop in this.employee)
-                        formdata.append(prop, this.employee[prop]);
+                        this.employee[prop] && formdata.append(prop, this.employee[prop]);
                     formdata.append('avatar', this.avatarObj);
 
                     axios.post('api/employees/store', formdata, {

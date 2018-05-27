@@ -20,9 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('employees/get-tree', 'EmployeeController@LazyLoadTree')->name('api.employees.getTree');
 
 Route::middleware('auth:api')->group(function () {
-    Route::get('employees/get-data', 'EmployeeController@GetData')->name('api.employees.getData');
-    Route::get('employees/get-one', 'EmployeeController@show')->name('api.employees.show');
+    Route::get('employees/get-data', 'EmployeeController@getData')->name('api.employees.getData');
     Route::delete('employees/destroy', 'EmployeeController@destroy')->name('api.employees.destroy');
     Route::post('employees/store', 'EmployeeController@store')->name('api.employees.store');
-    Route::post('employees/update-chief', 'EmployeeController@UpdateChief')->name('api.employees.updateChief');
 });

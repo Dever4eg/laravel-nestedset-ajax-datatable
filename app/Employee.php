@@ -19,30 +19,23 @@ class Employee extends Model
         return $this->belongsTo('App\Employee', 'chief_id');
     }
 
-    public function isDescendant($id)
+    public function isDescendant($employee)
     {
-        $e = self::with('chief')->find($id);
-        if( empty($e) || empty($e->chief))
+        if( empty($employee->chief_id) || empty($employee->chief))
             return false;
-        return $this->id == $e->chief->id || self::isDescendant($e->chief->id);
+        return $this->id == $employee->chief->id || self::isDescendant($employee->chief);
     }
 
-    public static function LazyLoadPrepare($collection, $hideProperties = null)
+    public static function LazyLoadPrepare($collection)
     {
         $arr = [];
 
         foreach ($collection as $item) {
-            $item->text = view('parts.employee')->with([
-                'fullname'  => $item->fullname,
-                'position'  => $item->position
-            ])->render();
 
             $item->hasChildren = $item->subordinates->isNotEmpty();
             $item->children = [];
-
-            $item->makeHidden(['position', 'fullname', 'subordinates',
-                'salary', 'created_at', 'updated_at', 'date', 'chief_id'
-            ]);
+            $item->collapsed = false;
+            $item->makeHidden(['created_at', 'updated_at', 'subordinates']);
 
             $arr[] = $item;
         }

@@ -60,20 +60,21 @@ class EmployeeController extends Controller
 
         $employee->fill($v);
 
-        // Если новый начальник является потомком даного елемента,
-        // то все дочерние елементы поднимаем на уровень выше и изменяем начальника
-        if(!empty($v['chief_id']) ) {
-            if($employee->isDescendant($v['chief_id'])) {
+        if(!empty($v['chief_id'] && $employee->chief_id != $v['chief_id']) ) {
+            $new_chief = Employee::with('chief')->findOrFail($v['chief_id']);
 
-                DB::transaction(function () use ($v, $employee) {
+            // Если новый начальник является потомком даного елемента,
+            // то все дочерние елементы поднимаем на уровень выше и изменяем начальника
+            if($employee->isDescendant($new_chief)) {
+
+                DB::transaction(function () use ($v, $employee, $new_chief) {
                     Employee::where('chief_id', $employee->id)
                         ->update(['chief_id' => $employee->chief_id]);
 
-                    $employee->chief_id = $v['chief_id'];
-                    $employee->save();
+                    $employee->chief()->associate($new_chief);
                 });
             } else {
-                $employee->chief()->associate(Employee::findOrFail($v['chief_id']))->save();
+                $employee->chief()->associate($new_chief);
             }
         }
 
@@ -111,13 +112,8 @@ class EmployeeController extends Controller
         return response()->json("Error. Employee was not updated");
     }
 
-    public function show(Request $request)
-    {
-        $id = $request->validate(['id' => 'required|integer|min:1'])['id'];
-        return Employee::find($id);
-    }
 
-    public function GetData(Request $request)
+    public function getData(Request $request)
     {
         $validated = $request->validate([
             'sortKey'   => 'required|in:fullname,position,date,salary',
@@ -149,14 +145,14 @@ class EmployeeController extends Controller
 
     public function LazyLoadTree(Request $request)
     {
-        $v = $request->validate(['parentId' => 'nullable|integer|min:0']);
-        $chief_id = isset($v['parentId']) ? $v['parentId'] : null;
+        $v = $request->validate(['chief_id' => 'nullable|integer|min:0']);
+        $chief_id = isset($v['chief_id']) ? $v['chief_id'] : null;
 
         $employees = Employee::where('chief_id', $chief_id)
             ->with('subordinates')
             ->get();
-        $employees = Employee::LazyLoadPrepare($employees);
+        Employee::LazyLoadPrepare($employees);
 
-        return response()->json($employees);
+        return $employees;
     }
 }

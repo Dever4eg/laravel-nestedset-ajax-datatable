@@ -972,12 +972,6 @@ boom@5.x.x:
   dependencies:
     hoek "4.x.x"
 
-bootstrap-tree-view@^1.8.0:
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/bootstrap-tree-view/-/bootstrap-tree-view-1.8.0.tgz#b13b1a30e4966fa9ed0dcfcd917d3da7cbd38add"
-  dependencies:
-    jquery ">=1.9.1"
-
 bootstrap@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.1.1.tgz#3aec85000fa619085da8d2e4983dfd67cf2114cb"
@@ -3038,12 +3032,6 @@ gifsicle@^3.0.0:
     bin-wrapper "^3.0.0"
     logalot "^2.0.0"
 
-gijgo@^1.9.6:
-  version "1.9.6"
-  resolved "https://registry.yarnpkg.com/gijgo/-/gijgo-1.9.6.tgz#ecc534216e92c874ae441b708e15e5b79f78f878"
-  dependencies:
-    jquery "^3.2.1"
-
 glob-base@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/glob-base/-/glob-base-0.3.0.tgz#dbb164f6221b1c0b1ccf82aea328b497df0ea3c4"
@@ -4042,7 +4030,7 @@ jquery-mousewheel@~3.1.13:
   version "3.1.13"
   resolved "https://registry.yarnpkg.com/jquery-mousewheel/-/jquery-mousewheel-3.1.13.tgz#06f0335f16e353a695e7206bf50503cb523a6ee5"
 
-jquery@>=1.9.1, jquery@^3.2.1, jquery@^3.3.1:
+jquery@^3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
 

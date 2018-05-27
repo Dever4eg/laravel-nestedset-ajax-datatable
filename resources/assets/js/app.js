@@ -16,6 +16,7 @@ window.Vue = require('vue');
  */
 
 Vue.component('employees', require('./components/Employees.vue'));
+Vue.component('employees-tree', require('./components/EmployeesTree.vue'));
 import VModal from 'vue-js-modal';
 import VeeValidate from 'vee-validate';
 

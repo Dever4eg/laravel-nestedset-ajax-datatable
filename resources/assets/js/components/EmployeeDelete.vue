@@ -1,8 +1,9 @@
 <template>
-    <div>
+    <div class="employees-delete">
         <h4>Are you sure you want to delete the employee {{employee.fullname}}?</h4>
         <button class="btn btn-light pull-left" @click="$emit('close')">Cancel</button>
         <button class="btn btn-danger pull-right" @click="remove">Delete</button>
+        <div class="clearfix"></div>
     </div>
 </template>
 
@@ -33,6 +34,8 @@
     }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+    .employees-delete {
+        padding: 20px;
+    }
 </style>

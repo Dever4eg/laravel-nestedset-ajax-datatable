@@ -61,7 +61,7 @@
 
         <a class="btn btn-light pull-left" @click="closeModal">Cancel</a>
         <a class="btn btn-warning pull-right" @click="onSubmit" :class="submitBtn.disabled ? 'disabled' : ''" >Save</a>
-
+        <div class="clearfix"></div>
     </div>
 </template>
 
@@ -192,10 +192,14 @@
 </script>
 
 <style scoped lang="scss">
-    .avatar {
-        padding: 20px 0;
+    .employee-edit {
+        padding: 20px;
+        .avatar {
+            padding: 20px 0;
+        }
+        .error {
+            color: #b30001;
+        }
     }
-    .error {
-        color: #b30001;
-    }
+
 </style>

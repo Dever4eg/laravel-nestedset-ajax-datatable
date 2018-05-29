@@ -1,40 +1,47 @@
 <template>
     <div class="employees-tree">
         <div v-for="item in data">
-            <div draggable="true" @dragover="dragOver" @dragenter="dragEnter" @drop="onDrop"  @dragstart="dragStart">
-                <div class="item">
-                    <a v-if="item.hasChildren" @click="collapse(item)" class="btn collapse-btn" >
-                        <i  :class="item.collapsed ? 'fa fa-minus-square' : 'fa fa-plus-square'"
-                            class="pull-left"></i>
-                    </a>
+            <drag :transfer-data="{dragItem: item}">
+                <drop @drop="(transferData, nativeEvent) => onDrop(transferData.dragItem, item)">
+                    <div class="item">
+                        <a v-if="item.hasChildren" @click="collapse(item)" class="btn collapse-btn" >
+                            <i  :class="item.collapsed ? 'fa fa-minus-square' : 'fa fa-plus-square'"
+                                class="pull-left"></i>
+                        </a>
 
-                    <span class="item-field-title">Fullname: </span>
-                    <span class="item-field-text">{{item.fullname}}</span>
+                        <span class="item-field-title">Fullname: </span>
+                        <span class="item-field-text">{{item.fullname}}</span>
 
-                    <span class="item-field-title">Position: </span>
-                    <span class="item-field-text">{{item.position}}</span>
+                        <span class="item-field-title">Position: </span>
+                        <span class="item-field-text">{{item.position}}</span>
 
-                </div>
+                    </div>
+                </drop>
+            </drag>
 
-                <div class="item-children-group" v-if="item.children.length !== 0 && item.collapsed">
-                    <employees-tree :employees="item.children"></employees-tree>
-                </div>
+            <div class="item-children-group" v-if="item.children.length !== 0 && item.collapsed">
+                <employees-tree :parentItem="item" :employees="item.children"></employees-tree>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+    import { Drag, Drop } from 'vue-drag-drop';
+
     export default {
         name: "EmployeesTree",
-        props: ['employees'],
+        props: ['employees', 'parentItem'],
+        components: {drag: Drag, drop: Drop},
         data() {
             return {
                 data: [],
+                parent: '',
             }
         },
         mounted() {
             this.data = this.employees;
+            this.parent = this.parentItem;
 
             if(!this.data) {
                 axios.get('api/employees/get-tree')
@@ -59,17 +66,26 @@
                 });
             },
 
-            dragStart(e) {
+            onDrop(dragItem, dropItem) {
+
+                axios.post('api/employees/store', {
+                    id: dragItem.id,
+                    fullname: dragItem.fullname,
+                    position: dragItem.position,
+                    salary: dragItem.salary,
+                    date: dragItem.date,
+                    chief_id: dropItem.id
+                }).then((response) => {
+                    dragItem.chief_id = dropItem.id;
+                    dropItem.hasChildren = true;
+
+                    this.$set(dropItem.children, dropItem.children.length, dragItem);
+                    this.$delete(this.data, this.data.indexOf(dragItem));
+
+                    this.lazyLoad(this.parent);
+                    this.lazyLoad(dropItem);
+                });
             },
-            dragEnter(e) {
-                e.preventDefault();
-            },
-            onDrop(e) {
-                console.log(e);
-            },
-            dragOver(e) {
-                e.preventDefault();
-            }
         }
     }
 </script>

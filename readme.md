@@ -1,12 +1,10 @@
-# Тестовое задание abz.agency
+# Тестовое задание
 
 ## Проект сделан с помощью laravel + vue
 
 ## Демо 
 http://abz-agency-test-dever4eg.herokuapp.com
 
-## Описание выполненой работы
-https://docs.google.com/document/d/1eypGXcOqmImQZ-RW7M1_rByEuWtzlALAs3ASXPem32I/edit
 
 ## Установка:
 

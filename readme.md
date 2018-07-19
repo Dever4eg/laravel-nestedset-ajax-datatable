@@ -8,8 +8,6 @@ http://abz-agency-test-dever4eg.herokuapp.com
 
 ## Установка:
 
-git clone https://dever4eg@bitbucket.org/dever4eg/abz.agencytest.git
-
 composer install
 
 yarn install || npm install
